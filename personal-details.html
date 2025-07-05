@@ -126,5 +126,46 @@
       &copy; 2025 Md Abu Naser Nayem • Built with HTML, CSS
     </footer>
   </div>
+
+      <h2>Upload Photo</h2>
+    <p>You can add new project or site images to your personal gallery.</p>
+
+    <form id="uploadForm">
+      <input type="file" id="fileInput" accept="image/*" />
+      <button type="submit" style="margin-top: 10px;">Upload</button>
+    </form>
+
+    <div id="previewArea" style="margin-top: 20px;"></div>
+
+    <script>
+      const form = document.getElementById('uploadForm');
+      const fileInput = document.getElementById('fileInput');
+      const preview = document.getElementById('previewArea');
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const file = fileInput.files[0];
+
+        if (!file || !file.type.startsWith('image/')) {
+          alert('Please select a valid image file.');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const img = document.createElement('img');
+          img.src = event.target.result;
+          img.alt = file.name;
+          img.style.width = '160px';
+          img.style.marginRight = '10px';
+          img.style.marginTop = '10px';
+          img.style.borderRadius = '6px';
+          img.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+          preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    </script>
+
 </body>
 </html>
