@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Settings | Md Abu Naser Nayem</title>
+  <link rel="stylesheet" href="settings.css" />
+</head>
+<body>
+  <header>
+    <h1>Settings</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="media.html">Media</a>
+      <a href="settings.html" class="active">Settings</a>
+    </nav>
+  </header>
+
+  <main id="settings">
+    <form id="settingsForm">
+      <h2>Customize Your Site</h2>
+
+      <label for="bgColor">Background Color:</label>
+      <input type="color" id="bgColor" name="bgColor" value="#f9f9f9" />
+
+      <label for="textColor">Text Color:</label>
+      <input type="color" id="textColor" name="textColor" value="#333333" />
+
+      <label for="linkColor">Link Color:</label>
+      <input type="color" id="linkColor" name="linkColor" value="#0077b6" />
+
+      <label for="fontSize">Base Font Size (px):</label>
+      <input type="number" id="fontSize" name="fontSize" min="12" max="24" value="16" />
+
+      <label for="darkModeToggle">
+        <input type="checkbox" id="darkModeToggle" name="darkModeToggle" />
+        Enable Dark Mode
+      </label>
+
+      <button type="submit">Save Settings</button>
+      <button type="button" id="resetBtn">Reset to Default</button>
+    </form>
+  </main>
+
+  <script src="settings.js"></script>
+</body>
+</html>
