@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Secure Media Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      color: #333;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      color: #0077b6;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    input[type="password"],
+    input[type="file"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 16px;
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005f8a;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+
+    #upload-form {
+      display: none;
+      margin-top: 30px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      color: #777;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Media Upload</h1>
+    <p>Please enter the password to unlock upload access.</p>
+  </header>
+
+  <!-- Password Section -->
+  <div id="password-section">
+    <label for="upload-password">Password:</label>
+    <input type="password" id="upload-password" placeholder="Enter password" />
+    <button id="password-submit">Submit</button>
+    <p class="error" id="password-message" style="display: none;">Incorrect password. Please try again.</p>
+  </div>
+
+  <!-- Upload Form -->
+  <form id="upload-form">
+    <label for="file-upload">Choose a file (image/video/gif):</label>
+    <input type="file" id="file-upload" accept="image/*,video/*,gif/*" />
+    <button type="submit">Upload</button>
+  </form>
+
+  <footer>
+    © 2025 Md Abu Naser Nayem
+  </footer>
+
+  <script>
+    const correctPassword = "YourSecret123"; // 🔒 Change this to your desired password
+    const passwordInput = document.getElementById("upload-password");
+    const passwordButton = document.getElementById("password-submit");
+    const passwordMessage = document.getElementById("password-message");
+    const uploadForm = document.getElementById("upload-form");
+    const passwordSection = document.getElementById("password-section");
+
+    passwordButton.addEventListener("click", () => {
+      const entered = passwordInput.value.trim();
+      if (entered === correctPassword) {
+        uploadForm.style.display = "block";
+        passwordSection.style.display = "none";
+      } else {
+        passwordMessage.style.display = "block";
+        passwordInput.value = "";
+      }
+    });
+
+    uploadForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const fileInput = document.getElementById("file-upload");
+      if (fileInput.files.length === 0) {
+        alert("Please select a file before uploading.");
+        return;
+      }
+
+      // Simulate upload
+      alert("Upload simulated! (You’ll need a real backend to store files.)");
+      fileInput.value = "";
+    });
+  </script>
+
+</body>
+</html>
