@@ -49,5 +49,38 @@
   <footer>
     <p>© Md Abu Naser Nayem</p>
   </footer>
+  <script>
+  document.getElementById('mediaUploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fileInput = document.getElementById('mediaFile');
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const gallery = document.getElementById('mediaGallery');
+    const fileURL = URL.createObjectURL(file);
+    const fileType = file.type;
+
+    let mediaElement;
+    if (fileType.startsWith('image/')) {
+      mediaElement = document.createElement('img');
+      mediaElement.src = fileURL;
+      mediaElement.alt = "Uploaded image";
+      mediaElement.style.maxWidth = '300px';
+    } else if (fileType.startsWith('video/')) {
+      mediaElement = document.createElement('video');
+      mediaElement.src = fileURL;
+      mediaElement.controls = true;
+      mediaElement.style.maxWidth = '300px';
+    } else {
+      alert('Unsupported file type');
+      return;
+    }
+
+    gallery.appendChild(mediaElement);
+    gallery.appendChild(document.createElement('hr'));
+    fileInput.value = ''; // Reset file input
+  });
+</script>
+
 </body>
 </html>
