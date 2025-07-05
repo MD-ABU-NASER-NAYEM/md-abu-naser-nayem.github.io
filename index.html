@@ -101,6 +101,17 @@
     });
   });
 </script>
+  <script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const darkMode = localStorage.getItem("darkMode") === "true";
+    if(darkMode) {
+      document.title = "🌙 Md Abu Naser Nayem | Civil Engineer (Dark Mode)";
+    } else {
+      document.title = "Md Abu Naser Nayem | Civil Engineer";
+    }
+  });
+</script>
+
 
 
 </body>
