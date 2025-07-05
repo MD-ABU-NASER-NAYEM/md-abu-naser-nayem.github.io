@@ -137,3 +137,6 @@ footer {
     padding: 15px;
   }
 }
+a:hover {
+  background-color: #023e8a;
+}
