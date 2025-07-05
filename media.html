@@ -58,12 +58,21 @@
   <main id="media" role="main">
     <h2>Media Uploads</h2>
 
-    <!-- Upload Form -->
-    <form id="mediaUploadForm" enctype="multipart/form-data">
-      <label for="mediaFile">Upload Media (Image, Video, or GIF):</label><br/>
-      <input type="file" id="mediaFile" accept="image/*,video/*" required /><br/><br/>
-      <button type="submit">Upload</button>
-    </form>
+    <!-- Password section -->
+<div id="password-section">
+  <label for="upload-password">Enter Password to Upload:</label>
+  <input type="password" id="upload-password" />
+  <button id="password-submit">Submit</button>
+  <p id="password-message" style="color:red; display:none;">Incorrect password. Try again.</p>
+</div>
+
+<!-- Upload form initially hidden -->
+<form id="upload-form" style="display:none;" enctype="multipart/form-data">
+  <label for="file-upload">Choose file to upload:</label>
+  <input type="file" id="file-upload" name="file-upload" accept="image/*,video/*,gif/*" />
+  <button type="submit">Upload</button>
+</form>
+
 
     <!-- Media Preview -->
     <div id="mediaGallery">
