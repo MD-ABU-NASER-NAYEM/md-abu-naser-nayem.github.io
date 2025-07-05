@@ -134,6 +134,32 @@
     });
   });
 </script>
+  <script>
+  const correctPassword = "YourSecret123"; // Change this to your actual password
+  const passwordSection = document.getElementById("password-section");
+  const uploadForm = document.getElementById("upload-form");
+  const passwordInput = document.getElementById("upload-password");
+  const passwordSubmit = document.getElementById("password-submit");
+  const passwordMessage = document.getElementById("password-message");
+
+  passwordSubmit.addEventListener("click", () => {
+    if (passwordInput.value === correctPassword) {
+      passwordSection.style.display = "none";
+      uploadForm.style.display = "block";
+      passwordMessage.style.display = "none";
+    } else {
+      passwordMessage.style.display = "block";
+      passwordInput.value = "";
+    }
+  });
+
+  // Prevent actual file submission (since no backend yet)
+  uploadForm.addEventListener("submit", e => {
+    e.preventDefault();
+    alert("File upload feature requires backend to work.");
+  });
+</script>
+
 
 </body>
 </html>
