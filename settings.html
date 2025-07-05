@@ -51,5 +51,21 @@
   </main>
 
   <script src="settings.js"></script>
+  <script>
+  // Load saved color if exists
+  window.onload = function () {
+    const savedColor = localStorage.getItem("titleColor");
+    if (savedColor) {
+      document.getElementById("titleColor").value = savedColor;
+    }
+  };
+
+  function saveColor() {
+    const selectedColor = document.getElementById("titleColor").value;
+    localStorage.setItem("titleColor", selectedColor);
+    alert("Title color saved! It will update on all pages.");
+  }
+</script>
+
 </body>
 </html>
