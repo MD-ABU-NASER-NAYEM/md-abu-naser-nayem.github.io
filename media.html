@@ -107,5 +107,23 @@
       fileInput.value = '';
     });
   </script>
+  <script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const darkMode = localStorage.getItem("darkMode") === "true";
+    const bgColor = darkMode ? "#121212" : (localStorage.getItem("bgColor") || "#f9f9f9");
+    const textColor = darkMode ? "#ddd" : (localStorage.getItem("textColor") || "#333333");
+    const linkColor = darkMode ? "#66aaff" : (localStorage.getItem("linkColor") || "#0077b6");
+    const fontSize = localStorage.getItem("fontSize") || "16";
+
+    document.body.style.backgroundColor = bgColor;
+    document.body.style.color = textColor;
+    document.body.style.fontSize = fontSize + "px";
+
+    document.querySelectorAll("a").forEach(a => {
+      a.style.color = linkColor;
+    });
+  });
+</script>
+
 </body>
 </html>
