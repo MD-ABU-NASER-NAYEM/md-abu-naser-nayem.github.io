@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Media Gallery | Md Abu Naser Nayem</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
       max-width: 900px;
+      padding: 20px;
       margin-left: auto;
       margin-right: auto;
       background-color: #f9f9f9;
@@ -34,10 +34,7 @@
       text-decoration: underline;
     }
 
-    h1 {
-      color: #0077b6;
-    }
-
+    h1 { color: #0077b6; }
     #mediaGallery img,
     #mediaGallery video {
       max-width: 100%;
@@ -58,7 +55,9 @@
 
   <header role="banner">
     <h1>Md Abu Naser Nayem</h1>
-    <p style="color:#023e8a; font-weight:600; font-size:1.1rem;">Civil Engineer | Structural Design | Project Planning | Infrastructure Development</p>
+    <p style="color:#023e8a; font-weight:600; font-size:1.1rem;">
+      Civil Engineer | Structural Design | Project Planning | Infrastructure Development
+    </p>
     <nav role="navigation">
       <a href="index.html">Home</a>
       <a href="media.html">Media Gallery</a>
@@ -69,10 +68,7 @@
 
   <main role="main">
     <h2>Media Gallery</h2>
-
-    <div id="mediaGallery">
-      <!-- Media will be loaded here -->
-    </div>
+    <div id="mediaGallery">Loading media…</div>
   </main>
 
   <footer role="contentinfo">
@@ -80,41 +76,52 @@
   </footer>
 
   <script>
-    // Replace these with your actual Cloudinary media URLs
-    const cloudinaryMedia = [
-      {
-        type: "image",
-        url: "https://res.cloudinary.com/your-cloud-name/image/upload/v1688683200/sample1.jpg",
-        alt: "Project Image 1"
-      },
-      {
-        type: "video",
-        url: "https://res.cloudinary.com/your-cloud-name/video/upload/v1688683200/sample2.mp4"
-      },
-      {
-        type: "image",
-        url: "https://res.cloudinary.com/your-cloud-name/image/upload/v1688683200/sample3.png",
-        alt: "Project Image 2"
-      }
-      // Add more media objects here as needed
-    ];
+    (async () => {
+      const cloudName = 'dfie25m2j';  // ← replace this
+      const tag = 'portfolio';              // ← value set during upload
+      const gallery = document.getElementById('mediaGallery');
+      gallery.innerHTML = '';
 
-    const gallery = document.getElementById("mediaGallery");
-
-    cloudinaryMedia.forEach(media => {
-      let element;
-      if (media.type === "image") {
-        element = document.createElement("img");
-        element.src = media.url;
-        element.alt = media.alt || "Cloudinary image";
-      } else if (media.type === "video") {
-        element = document.createElement("video");
-        element.src = media.url;
-        element.controls = true;
+      async function fetchResources(type) {
+        const url = `https://res.cloudinary.com/${cloudName}/${type}/list/${tag}.json`;
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error(`No ${type} found`);
+          const data = await res.json();
+          return data.resources.map(r => ({
+            type,
+            url: `https://res.cloudinary.com/${cloudName}/${type}/upload/${r.public_id}.${r.format}`
+          }));
+        } catch (err) {
+          console.warn(err);
+          return [];
+        }
       }
-      gallery.appendChild(element);
-      gallery.appendChild(document.createElement("hr"));
-    });
+
+      const [images, videos] = await Promise.all([
+        fetchResources('image'),
+        fetchResources('video')
+      ]);
+
+      const mediaItems = [...images, ...videos];
+
+      if (mediaItems.length === 0) {
+        gallery.innerHTML = "<p>No media found. Make sure your uploads are tagged and your Cloudinary settings allow public listing.</p>";
+        return;
+      }
+
+      mediaItems.forEach(item => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'media-item';
+        if (item.type === 'video') {
+          wrapper.innerHTML = `<video controls src="${item.url}"></video>`;
+        } else {
+          wrapper.innerHTML = `<img src="${item.url}" alt="Uploaded Image">`;
+        }
+        gallery.appendChild(wrapper);
+        gallery.appendChild(document.createElement('hr'));
+      });
+    })();
   </script>
 
 </body>
