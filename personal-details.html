@@ -167,5 +167,164 @@
       });
     </script>
 
+  <!-- === START OF CLOUDINARY UPLOAD & MEDIA DISPLAY SECTION === -->
+
+<h2>Upload Media (Image/Video)</h2>
+<p>Use this form to upload images or videos to your Cloudinary media gallery tagged with <code>self</code>.</p>
+
+<form id="cloudinaryUploadForm">
+  <input type="file" id="mediaFileInput" accept="image/*,video/*" />
+  <button type="submit" style="margin-top: 10px;">Upload to Cloudinary</button>
+</form>
+
+<div id="uploadStatus" style="margin-top: 10px; font-weight: bold;"></div>
+
+<h2>Media Gallery</h2>
+<div id="cloudinaryMediaGallery" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 15px;">
+  Loading media...
+</div>
+
+<p style="margin-top: 2rem;">
+  <a href="https://console.cloudinary.com/" target="_blank" style="color:#0077b6; font-weight:bold;">
+    Go to Cloudinary Admin Console
+  </a>
+</p>
+
+<script>
+  (function(){
+    const cloudName = 'dfie25m2j'; // Replace with your Cloudinary cloud name
+    const uploadPreset = 'unsigned_preset_here'; // Replace with your unsigned upload preset name
+    const tagName = 'self'; // Media tag to fetch & upload (changed from portfolio)
+
+    const form = document.getElementById('cloudinaryUploadForm');
+    const fileInput = document.getElementById('mediaFileInput');
+    const statusDiv = document.getElementById('uploadStatus');
+    const galleryDiv = document.getElementById('cloudinaryMediaGallery');
+
+    // Fetch & display media tagged 'self'
+    async function loadMedia() {
+      galleryDiv.innerHTML = 'Loading media...';
+      try {
+        // Fetch images
+        const imagesResponse = await fetch(`https://res.cloudinary.com/${cloudName}/image/list/${tagName}.json`);
+        const imagesData = imagesResponse.ok ? await imagesResponse.json() : {resources:[]};
+        // Fetch videos
+        const videosResponse = await fetch(`https://res.cloudinary.com/${cloudName}/video/list/${tagName}.json`);
+        const videosData = videosResponse.ok ? await videosResponse.json() : {resources:[]};
+
+        const media = [];
+
+        if (imagesData.resources) {
+          imagesData.resources.forEach(r => {
+            media.push({
+              type: 'image',
+              url: `https://res.cloudinary.com/${cloudName}/image/upload/${r.public_id}.${r.format}`,
+              public_id: r.public_id
+            });
+          });
+        }
+
+        if (videosData.resources) {
+          videosData.resources.forEach(r => {
+            media.push({
+              type: 'video',
+              url: `https://res.cloudinary.com/${cloudName}/video/upload/${r.public_id}.${r.format}`,
+              public_id: r.public_id
+            });
+          });
+        }
+
+        if(media.length === 0) {
+          galleryDiv.innerHTML = '<p>No media found with the tag "self".</p>';
+          return;
+        }
+
+        galleryDiv.innerHTML = '';
+        media.forEach(item => {
+          const div = document.createElement('div');
+          div.style.border = '1px solid #ddd';
+          div.style.borderRadius = '8px';
+          div.style.overflow = 'hidden';
+          div.style.backgroundColor = '#fff';
+          div.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+          div.style.display = 'flex';
+          div.style.justifyContent = 'center';
+          div.style.alignItems = 'center';
+          div.style.height = '160px';
+
+          if (item.type === 'image') {
+            const img = document.createElement('img');
+            img.src = item.url;
+            img.alt = item.public_id;
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '100%';
+            div.appendChild(img);
+          } else {
+            const video = document.createElement('video');
+            video.src = item.url;
+            video.controls = true;
+            video.style.maxWidth = '100%';
+            video.style.maxHeight = '100%';
+            div.appendChild(video);
+          }
+
+          galleryDiv.appendChild(div);
+        });
+
+      } catch (error) {
+        galleryDiv.innerHTML = `<p style="color:red;">Failed to load media: ${error.message}</p>`;
+      }
+    }
+
+    // Upload handler
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      statusDiv.style.color = '#000';
+      statusDiv.textContent = 'Uploading... please wait.';
+
+      const file = fileInput.files[0];
+      if (!file) {
+        statusDiv.style.color = 'red';
+        statusDiv.textContent = 'Please select a media file to upload.';
+        return;
+      }
+
+      const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+      const formData = new FormData();
+
+      // Note: You MUST create an unsigned upload preset in Cloudinary dashboard and replace uploadPreset below!
+      formData.append('upload_preset', uploadPreset);
+      formData.append('file', file);
+      formData.append('tags', tagName);
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          body: formData
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          statusDiv.style.color = 'green';
+          statusDiv.textContent = 'Upload successful! Your media is now live.';
+          fileInput.value = '';
+          loadMedia();
+        } else {
+          throw new Error(data.error?.message || 'Upload failed');
+        }
+      } catch(err) {
+        statusDiv.style.color = 'red';
+        statusDiv.textContent = `Upload failed: ${err.message}`;
+      }
+    });
+
+    // Load media on page load
+    loadMedia();
+  })();
+</script>
+
+<!-- === END OF CLOUDINARY UPLOAD & MEDIA DISPLAY SECTION === -->
+
+
 </body>
 </html>
