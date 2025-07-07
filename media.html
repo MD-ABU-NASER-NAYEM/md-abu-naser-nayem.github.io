@@ -2,94 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Upload and preview media files including images, videos, and GIFs." />
-  <title>Media Uploads | Md Abu Naser Nayem</title>
-  <link rel="stylesheet" href="media.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Media Gallery | Md Abu Naser Nayem</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
+      padding: 20px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #f9f9f9;
+      color: #333;
     }
 
     header, footer {
       background-color: #f2f2f2;
       text-align: center;
-      padding: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
     }
 
     nav a {
-      margin: 0 10px;
+      margin: 0 15px;
       text-decoration: none;
-      color: #333;
+      color: #0077b6;
+      font-weight: bold;
     }
 
-    #media {
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
+    nav a:hover {
+      text-decoration: underline;
     }
 
-    #mediaUploadForm {
-      margin-bottom: 20px;
+    h1 {
+      color: #0077b6;
     }
 
     #mediaGallery img,
     #mediaGallery video {
       max-width: 100%;
-      margin: 10px 0;
+      margin: 15px 0;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      display: block;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 25px 0;
     }
   </style>
-  <script>
-  window.onload = function () {
-    const savedColor = localStorage.getItem("titleColor");
-    if (savedColor) {
-      const h1 = document.querySelector("h1");
-      if (h1) {
-        h1.style.color = savedColor;
-      }
-    }
-  };
-</script>
-
 </head>
 <body>
+
   <header role="banner">
     <h1>Md Abu Naser Nayem</h1>
-    <p style="color:#023e8a; font-weight:600; font-size:1.1rem;font-style: normal;">Civil Engineer | Structural Design | Project Planning | Infrastructure Development</p>
+    <p style="color:#023e8a; font-weight:600; font-size:1.1rem;">Civil Engineer | Structural Design | Project Planning | Infrastructure Development</p>
     <nav role="navigation">
       <a href="index.html">Home</a>
-      <a href="media-upload.html">Upload Media</a>
+      <a href="media.html">Media Gallery</a>
       <a href="settings.html">Settings ⚙️</a>
     </nav>
   </header>
 
-  <main id="media" role="main">
-    <h2>Media Uploads</h2>
+  <main role="main">
+    <h2>Media Gallery</h2>
 
-    <!-- Password section -->
-<div id="password-section">
-  <label for="upload-password">Enter Password to Upload:</label>
-  <input type="password" id="upload-password" />
-  <button id="password-submit">Submit</button>
-  <p id="password-message" style="color:red; display:none;">Incorrect password. Try again.</p>
-</div>
-
-<!-- Upload form initially hidden -->
-<form id="upload-form" style="display:none;" enctype="multipart/form-data">
-  <label for="file-upload">Choose file to upload:</label>
-  <input type="file" id="file-upload" name="file-upload" accept="image/*,video/*,gif/*" />
-  <button type="submit">Upload</button>
-</form>
-
-
-    <!-- Media Preview -->
     <div id="mediaGallery">
-      <h3>Uploaded Media</h3>
-      <p>Uploaded files will be displayed here.</p>
+      <!-- Media will be loaded here -->
     </div>
   </main>
 
@@ -98,80 +79,42 @@
   </footer>
 
   <script>
-    document.getElementById('mediaUploadForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const fileInput = document.getElementById('mediaFile');
-      const file = fileInput.files[0];
-      const gallery = document.getElementById('mediaGallery');
-
-      if (!file) return;
-
-      const fileURL = URL.createObjectURL(file);
-      const fileType = file.type;
-      let mediaElement;
-
-      if (fileType.startsWith('image/')) {
-        mediaElement = document.createElement('img');
-        mediaElement.src = fileURL;
-        mediaElement.alt = "Uploaded image";
-      } else if (fileType.startsWith('video/')) {
-        mediaElement = document.createElement('video');
-        mediaElement.src = fileURL;
-        mediaElement.controls = true;
-      } else {
-        alert('Unsupported file type');
-        return;
+    // Replace these with your actual Cloudinary media URLs
+    const cloudinaryMedia = [
+      {
+        type: "image",
+        url: "https://res.cloudinary.com/your-cloud-name/image/upload/v1688683200/sample1.jpg",
+        alt: "Project Image 1"
+      },
+      {
+        type: "video",
+        url: "https://res.cloudinary.com/your-cloud-name/video/upload/v1688683200/sample2.mp4"
+      },
+      {
+        type: "image",
+        url: "https://res.cloudinary.com/your-cloud-name/image/upload/v1688683200/sample3.png",
+        alt: "Project Image 2"
       }
+      // Add more media objects here as needed
+    ];
 
-      gallery.appendChild(mediaElement);
-      gallery.appendChild(document.createElement('hr'));
-      fileInput.value = '';
+    const gallery = document.getElementById("mediaGallery");
+
+    cloudinaryMedia.forEach(media => {
+      let element;
+      if (media.type === "image") {
+        element = document.createElement("img");
+        element.src = media.url;
+        element.alt = media.alt || "Cloudinary image";
+      } else if (media.type === "video") {
+        element = document.createElement("video");
+        element.src = media.url;
+        element.controls = true;
+      }
+      gallery.appendChild(element);
+      gallery.appendChild(document.createElement("hr"));
     });
   </script>
-  <script>
-  window.addEventListener("DOMContentLoaded", () => {
-    const darkMode = localStorage.getItem("darkMode") === "true";
-    const bgColor = darkMode ? "#121212" : (localStorage.getItem("bgColor") || "#f9f9f9");
-    const textColor = darkMode ? "#ddd" : (localStorage.getItem("textColor") || "#333333");
-    const linkColor = darkMode ? "#66aaff" : (localStorage.getItem("linkColor") || "#0077b6");
-    const fontSize = localStorage.getItem("fontSize") || "16";
-
-    document.body.style.backgroundColor = bgColor;
-    document.body.style.color = textColor;
-    document.body.style.fontSize = fontSize + "px";
-
-    document.querySelectorAll("a").forEach(a => {
-      a.style.color = linkColor;
-    });
-  });
-</script>
-  <script>
-  const correctPassword = "YourSecret123"; // Change this to your actual password
-  const passwordSection = document.getElementById("password-section");
-  const uploadForm = document.getElementById("upload-form");
-  const passwordInput = document.getElementById("upload-password");
-  const passwordSubmit = document.getElementById("password-submit");
-  const passwordMessage = document.getElementById("password-message");
-
-  passwordSubmit.addEventListener("click", () => {
-    if (passwordInput.value === correctPassword) {
-      passwordSection.style.display = "none";
-      uploadForm.style.display = "block";
-      passwordMessage.style.display = "none";
-    } else {
-      passwordMessage.style.display = "block";
-      passwordInput.value = "";
-    }
-  });
-
-  // Prevent actual file submission (since no backend yet)
-  uploadForm.addEventListener("submit", e => {
-    e.preventDefault();
-    alert("File upload feature requires backend to work.");
-  });
-</script>
-
 
 </body>
 </html>
