@@ -36,13 +36,16 @@
 
     h1 { color: #0077b6; }
     #mediaGallery img,
-    #mediaGallery video {
-      max-width: 100%;
-      margin: 15px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      display: block;
-    }
+#mediaGallery video {
+  width: 100%;
+  max-width: 600px;  /* This is the starting width, controlled by slider */
+  height: auto;
+  margin: 20px auto;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  display: block;
+}
+
 
     hr {
       border: none;
@@ -68,6 +71,18 @@
 
   <main role="main">
     <h2>Media Gallery</h2>
+    <!-- Media Width Control -->
+<div style="margin-bottom: 20px;">
+  <label>
+    Max Width (px):
+    <input type="range" id="maxWidthControl" min="100" max="900" value="600">
+    <span id="widthValue">600</span>px
+  </label>
+</div>
+
+
+
+    
     <div id="mediaGallery">Loading media…</div>
   </main>
 
@@ -121,6 +136,21 @@
         gallery.appendChild(wrapper);
         gallery.appendChild(document.createElement('hr'));
       });
+
+      // Add listener to control max-width
+const widthSlider = document.getElementById('maxWidthControl');
+const widthValueDisplay = document.getElementById('widthValue');
+
+widthSlider.addEventListener('input', () => {
+  const maxWidth = widthSlider.value;
+  widthValueDisplay.textContent = maxWidth;
+
+  const mediaElements = document.querySelectorAll('#mediaGallery img, #mediaGallery video');
+  mediaElements.forEach(el => {
+    el.style.maxWidth = maxWidth + 'px';
+  });
+});
+
     })();
   </script>
 
