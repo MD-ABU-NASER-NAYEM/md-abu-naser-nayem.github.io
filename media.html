@@ -5,54 +5,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Media Gallery | Md Abu Naser Nayem</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      max-width: 900px;
-      padding: 20px;
-      margin-left: auto;
-      margin-right: auto;
-      background-color: #f9f9f9;
-      color: #333;
-    }
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    max-width: 900px;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #f9f9f9;
+    color: #333;
+  }
 
-    header, footer {
-      background-color: #f2f2f2;
-      text-align: center;
-      padding: 15px;
-      margin-bottom: 20px;
-    }
+  header, footer {
+    background-color: #f2f2f2;
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
 
-    nav a {
-      margin: 0 15px;
-      text-decoration: none;
-      color: #0077b6;
-      font-weight: bold;
-    }
+  nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #0077b6;
+    font-weight: bold;
+  }
 
-    nav a:hover {
-      text-decoration: underline;
-    }
+  nav a:hover {
+    text-decoration: underline;
+  }
 
-    h1 { color: #0077b6; }
-    #mediaGallery img,
-#mediaGallery video {
-  width: 100%;
-  max-width: 600px;  /* This is the starting width, controlled by slider */
-  height: auto;
-  margin: 20px auto;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  display: block;
-}
+  h1 { color: #0077b6; }
 
+  /* === NEW GRID STYLES === */
+  #mediaGallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 10px 0;
+  }
 
-    hr {
-      border: none;
-      border-top: 1px solid #ddd;
-      margin: 25px 0;
-    }
-  </style>
+  .media-item {
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    max-width: 400px;  /* limit max size per card */
+    margin: 0 auto;
+  }
+
+  .media-item img,
+  .media-item video {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    display: block;
+    max-width: 100%;  /* never overflow container */
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 25px 0;
+  }
+</style>
+
 </head>
 <body>
 
@@ -126,23 +146,28 @@
       }
 
       mediaItems.forEach(item => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'media-item';
-        if (item.type === 'video') {
-          wrapper.innerHTML = `<video controls src="${item.url}"></video>`;
-        } else {
-          wrapper.innerHTML = `<img src="${item.url}" alt="Uploaded Image">`;
-        }
-        gallery.appendChild(wrapper);
-        gallery.appendChild(document.createElement('hr'));
-      });
+  const wrapper = document.createElement('div');
+  wrapper.className = 'media-item';
+  if (item.type === 'video') {
+    wrapper.innerHTML = `<video controls src="${item.url}"></video>`;
+  } else {
+    wrapper.innerHTML = `<img src="${item.url}" alt="Uploaded Image">`;
+  }
+  gallery.appendChild(wrapper);
+  // Removed <hr> because grid gap is handling spacing
+});
+
 
       // Add listener to control max-width
 const widthSlider = document.getElementById('maxWidthControl');
 const widthValueDisplay = document.getElementById('widthValue');
 
 widthSlider.addEventListener('input', () => {
-  const maxWidth = widthSlider.value;
+  let maxWidth = parseInt(widthSlider.value);
+
+  const containerMaxWidth = 400; // should match CSS max-width of media-item
+  if (maxWidth > containerMaxWidth) maxWidth = containerMaxWidth;
+
   widthValueDisplay.textContent = maxWidth;
 
   const mediaElements = document.querySelectorAll('#mediaGallery img, #mediaGallery video');
@@ -150,6 +175,7 @@ widthSlider.addEventListener('input', () => {
     el.style.maxWidth = maxWidth + 'px';
   });
 });
+
 
     })();
   </script>
