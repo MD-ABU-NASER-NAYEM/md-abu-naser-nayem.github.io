@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Landscape Media Gallery | Md Abu Naser Nayem</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 20px auto;
+      background: #f9f9f9;
+      color: #333;
+      padding: 0 15px;
+    }
+    header, footer {
+      background-color: #f2f2f2;
+      text-align: center;
+      padding: 15px 10px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+    header h1 {
+      color: #0077b6;
+      margin: 0 0 6px 0;
+    }
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #0077b6;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    #mediaGallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .media-item {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+      overflow: hidden;
+      max-width: 400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px;
+    }
+    .media-item img,
+    .media-item video {
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      display: block;
+      max-width: 100%;
+    }
+    label {
+      display: block;
+      margin: 10px auto;
+      max-width: 400px;
+      font-weight: bold;
+      color: #0077b6;
+    }
+    input[type=range] {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <header role="banner">
+    <h1>Md Abu Naser Nayem</h1>
+    <nav role="navigation">
+      <a href="index.html">Home</a>
+      <a href="media.html">Media Gallery</a>
+      <a href="media-upload.html">Upload Media</a>
+      <a href="settings.html">Settings ⚙️</a>
+    </nav>
+  </header>
+
+  <main role="main">
+    <h2>Landscape Media Gallery</h2>
+
+    <label for="maxWidthControl">
+      Max media width: <span id="widthValue">400</span> px
+      <input type="range" id="maxWidthControl" min="100" max="400" value="400" />
+    </label>
+
+    <div id="mediaGallery">Loading media...</div>
+  </main>
+
+  <footer role="contentinfo">
+    <p>© Md Abu Naser Nayem</p>
+  </footer>
+
+  <script>
+    (async () => {
+      const cloudName = 'your_cloud_name'; // <---- REPLACE with your Cloudinary cloud name
+      const tag = 'landscape';              // Tag to filter landscape media
+      const gallery = document.getElementById('mediaGallery');
+      gallery.innerHTML = '';
+
+      async function fetchResources(type) {
+        const url = `https://res.cloudinary.com/${cloudName}/${type}/list/${tag}.json`;
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error(`No ${type} found with tag "${tag}"`);
+          const data = await res.json();
+          return data.resources.map(r => ({
+            type,
+            url: `https://res.cloudinary.com/${cloudName}/${type}/upload/${r.public_id}.${r.format}`
+          }));
+        } catch (e) {
+          console.warn(e);
+          return [];
+        }
+      }
+
+      const [images, videos] = await Promise.all([
+        fetchResources('image'),
+        fetchResources('video'),
+      ]);
+
+      const mediaItems = [...images, ...videos];
+
+      if (mediaItems.length === 0) {
+        gallery.innerHTML = `<p>No media found with tag "${tag}". Upload and tag your media in Cloudinary dashboard.</p>`;
+        return;
+      }
+
+      mediaItems.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'media-item';
+
+        if (item.type === 'video') {
+          div.innerHTML = `<video controls preload="metadata" src="${item.url}"></video>`;
+        } else {
+          div.innerHTML = `<img src="${item.url}" alt="Landscape Image" loading="lazy" />`;
+        }
+        gallery.appendChild(div);
+      });
+
+      const widthSlider = document.getElementById('maxWidthControl');
+      const widthValue = document.getElementById('widthValue');
+
+      widthSlider.addEventListener('input', () => {
+        const maxWidth = widthSlider.value;
+        widthValue.textContent = maxWidth;
+
+        const mediaEls = document.querySelectorAll('#mediaGallery img, #mediaGallery video');
+        mediaEls.forEach(el => {
+          el.style.maxWidth = maxWidth + 'px';
+        });
+      });
+
+      // Trigger initial max-width setting
+      widthSlider.dispatchEvent(new Event('input'));
+    })();
+  </script>
+
+</body>
+</html>
