@@ -88,13 +88,13 @@
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script>
     (function() {
-      emailjs.init("your_public_key"); // 🔁 Replace this
+      emailjs.init("qrUP4KALOb8hl_uj7"); // 🔁 Replace this
     })();
 
     document.getElementById("contact-form").addEventListener("submit", function(e) {
       e.preventDefault();
 
-      emailjs.sendForm("your_service_id", "your_template_id", this) // 🔁 Replace both
+      emailjs.sendForm("service_2k1j0yw", "template_clea32b", this) // 🔁 Replace both
         .then(function() {
           document.getElementById("status-msg").innerText = "Message sent successfully!";
         }, function(error) {
